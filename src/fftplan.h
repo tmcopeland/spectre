@@ -2,7 +2,11 @@
 #ifndef __SPECTRE_FFT_PLAN_H__
 #define __SPECTRE_FFT_PLAN_H__
 
+extern "C"
+{
+#include <glib.h>
 #include <libavcodec/avfft.h>
+}
 
 namespace Spectre
 {
@@ -11,14 +15,16 @@ class FftPlan
 {
 public:
     FftPlan(int n, int threshold);
-    virtual ~FftPlan(void);
     
+    virtual ~FftPlan(void);
     void execute(void);
-public:
+protected:
     int n;
     int threshold;
+    
     float* input;
     float* output;
+    
     RDFTContext* ctx;
 };
 
