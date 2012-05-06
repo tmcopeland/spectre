@@ -1,0 +1,8 @@
+[Desktop Entry]
+_Name=Spectre Acoustic Spectrum Analyzer
+_Comment=View the spectrum of most any audio file.
+Exec=spectre
+StartupNotify=true
+Terminal=false
+Type=Application
+Categories=GTK;Audio;

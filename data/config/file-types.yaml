@@ -1,0 +1,19 @@
+--- # Audio File Types
+- file-type:
+    name:       "Advanced Audio Coding File"
+    extension:  ["*.aac", "*.m4b", "*.m4p", "*.m4r", ".mp4", ".3gp"]
+    mime:       ["audio/aac", "audio/aacp", "audio/3gpp", "audio/3gpp2",
+                 "audio/mp4", "audio/MP4A-LATM", "audio/mpeg4-generic"]
+- file-type:
+    name:       "Free Lossless Audio Codec File"
+    extension:  ["*.flac"]
+    mime:       ["audio/flac"]
+- file-type:
+    name:       "MPEG Layer 3 Audio File"
+    extension:  ["*.mp3"]
+    mime:       ["audio/mpeg"]
+- file-type:
+    name:       "OGG Vorbis Audio File"
+    extension:  ["*.ogg"]
+    mime:       ["audio/ogg"]
+

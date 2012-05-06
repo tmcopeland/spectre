@@ -1,0 +1,1 @@
+spectre-spectre-window.o: spectre-window.cc

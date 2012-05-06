@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- -*- Mode: XML; coding: utf-8; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*- -->
+<!--
+ Copyright (C) 2012 Taylor M. Copeland <taylor@taylorcopeland.com>
+-->
+<ui>
+  <!-- Main Menu Bar -->
+  <menubar name='MenuBar'>
+    <menu action='File'>
+      <menuitem action='FileOpen'/>
+      <menuitem action='FileSave'/>
+      <separator/>
+      <menuitem action='FileQuit'/>
+    </menu>
+    <menu action='Edit'>
+      <menuitem action='EditPreferences'/>
+    </menu>
+    <menu action='Help'>
+      <menuitem action='HelpAbout'/>
+    </menu>
+  </menubar>
+  
+  <!-- Main Toolbar -->
+  <toolbar name='ToolBar'>
+    <toolitem action='FileOpen'/>
+    <toolitem action='FileSave'/>
+    <separator expand='true'/>
+    <toolitem action='HelpAbout'/>
+  </toolbar>
+</ui>
+

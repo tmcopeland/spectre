@@ -1,0 +1,45 @@
+# Copyright (C) 2012 Taylor M. Copeland <taylor@taylorcopeland.com>
+--- # Languages supported by Spectre
+- language:
+    name:
+    code:   ""
+- language:
+    name:   "Čeština"
+    code:   "cs"
+- language:
+    name:   "Deutsch"
+    code:   "de"
+- language:
+    name:   "English"
+    code:   "en"
+- language:
+    name:   "Español"
+    code:   "es"
+- language:
+    name:   "Français"
+    code:   "fr"
+- language:
+    name:   "Italiano"
+    code:   "it"
+- language:
+    name:   "日本語"
+    code:   "ja"
+- language:
+    name:   "Nederlands"
+    code:   "nl"
+- language:
+    name:   "Polski"
+    code:   "pl"
+- language:
+    name:   "Português brasileiro"
+    code:   "pt_BR"
+- language:
+    name:   "Русский"
+    code:   "ru"
+- language:
+    name:   "Svenska"
+    code:   "sv"
+- language:
+    name:   "Українська"
+    code:   "uk"
+

@@ -1,0 +1,4 @@
+data/spectre.desktop.in
+data/spectre.desktop.in.in
+src/filechooserdialog.cc
+src/window.cc
