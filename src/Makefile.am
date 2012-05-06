@@ -29,6 +29,8 @@ spectre_LDFLAGS =\
 	-Wall
 
 spectre_SOURCES =\
+	audio.h\
+	audio.cc\
 	data.h\
 	data.cc\
 	aboutdialog.h\
