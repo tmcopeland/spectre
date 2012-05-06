@@ -1,4 +1,5 @@
 *.goutputstream*
+.intltool-merge-cache
 *.pot
 autom4te.cache/
 *~
