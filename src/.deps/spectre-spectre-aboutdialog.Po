@@ -1,1 +1,0 @@
-spectre-spectre-aboutdialog.o: spectre-aboutdialog.cc
