@@ -2,6 +2,7 @@ autom4te.cache/
 *~
 config.h
 config.log
+config.status
 configure
 Makefile
 Makefile.in
@@ -10,8 +11,10 @@ intltool-extract
 intltool-merge
 intltool-update
 stamp-h1
+data/spectre.desktop
 data/spectre.desktop.in
 data/spectre.desktop.in.u1conflict
 src/.deps/
 src/.libs/
-*.o
+src/*.o
+src/spectre
