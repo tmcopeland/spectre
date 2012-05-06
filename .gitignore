@@ -1,9 +1,14 @@
+autom4te.cache/
+*~
+config.h
+config.log
 configure
 Makefile.in
 Makefile
 intltool-extract
 intltool-merge
 intltool-update
+stamp-h1
 data/Makefile.in
 data/Makefile
 data/Makefile.u1conflict
