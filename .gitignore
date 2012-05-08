@@ -1,6 +1,7 @@
 *.goutputstream*
 *.u1conflict
 po/.intltool-merge-cache
+po/missing
 *.pot
 autom4te.cache/
 *~
