@@ -1,0 +1,70 @@
+# Spanish translations for spectre package.
+# Copyright (C) 2012 Taylor Copeland
+# This file is distributed under the same license as the spectre package.
+# Taylor Copeland <taylor@taylor-serval-professional>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: spectre 0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-05-07 21:51-0400\n"
+"PO-Revision-Date: 2012-05-07 21:56-0400\n"
+"Last-Translator: Taylor Copeland <taylor@taylor-serval-professional>\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ASCII\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../data/spectre.desktop.in.h:1 ../data/spectre.desktop.in.in.h:1
+msgid "Spectre Acoustic Spectrum Analyzer"
+msgstr "Analizador del Espectro de Sonido Spectre"
+
+#: ../data/spectre.desktop.in.h:2 ../data/spectre.desktop.in.in.h:2
+msgid "View the spectrum of most any audio file."
+msgstr "Vea el espectro de casi algun archivo del audio."
+
+#: ../src/audio.cc:35
+msgid "Cannot open input file."
+msgstr "No puede abrir archivo de entrada."
+
+#: ../src/audio.cc:43
+msgid "Cannot find stream info."
+msgstr "No puede encontrar el chorrito de informaci\xc3\xb3n."
+
+#: ../src/audio.cc:61
+msgid "The file contains no audio streams"
+msgstr "El archivo no tiene nada chorritos de audio"
+
+#: ../src/audio.cc:71
+msgid "Cannot find decoder."
+msgstr "No puede encontrar un descodificador."
+
+#: ../src/audio.cc:99
+msgid "Unknown duration."
+msgstr "Un duraci\xc3\xb3n desconocido."
+
+#: ../src/audio.cc:104
+msgid "No audio channels."
+msgstr "No hay nada canales de audio."
+
+#: ../src/audio.cc:109
+msgid "Cannot open decoder."
+msgstr "No puede abrir el descodificador."
+
+#: ../src/audio.cc:131
+msgid "Unsupported sample format."
+msgstr "Un formata muestra sin apoyo."
+
+#: ../src/filechooserdialog.cc:30
+msgid "Save Spectrogram"
+msgstr "Guarde Espectrograma"
+
+#: ../src/filechooserdialog.cc:35
+msgid "Open File"
+msgstr "Abra un Archivo"
+
+#: ../src/window.cc:20
+msgid "Spectre"
+msgstr "Spectre"
