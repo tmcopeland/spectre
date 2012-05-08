@@ -2,6 +2,7 @@
 *.u1conflict
 po/.intltool-merge-cache
 po/missing
+po/POTFILES
 *.pot
 autom4te.cache/
 *~
