@@ -1,4 +1,5 @@
 data/spectre.desktop.in
 data/spectre.desktop.in.in
+src/audio.cc
 src/filechooserdialog.cc
 src/window.cc
