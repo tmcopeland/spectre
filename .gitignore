@@ -3,6 +3,7 @@
 po/.intltool-merge-cache
 po/missing
 po/POTFILES
+po/*.gmo
 *.pot
 autom4te.cache/
 *~
