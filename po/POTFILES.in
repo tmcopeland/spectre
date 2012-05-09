@@ -1,5 +1,6 @@
 data/spectre.desktop.in
 data/spectre.desktop.in.in
+intl/plural.c
 src/audio.cc
 src/filechooserdialog.cc
 src/window.cc
