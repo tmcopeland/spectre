@@ -8,6 +8,13 @@
 use std::env;
 
 fn main() {
+    #[cfg(feature = "gui")]
+    slint_build::compile("ui/spectre.slint").expect("failed to compile the Slint UI");
+
+    link_sndfile();
+}
+
+fn link_sndfile() {
     println!("cargo:rerun-if-env-changed=SNDFILE_LIB_DIR");
     println!("cargo:rerun-if-changed=build.rs");
 

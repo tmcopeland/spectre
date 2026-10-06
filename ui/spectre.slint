@@ -1,0 +1,229 @@
+import { Button, ComboBox, Slider, Palette } from "std-widgets.slint";
+
+export struct TickMark {
+    /// Fraction along the axis: from the left for time, from the bottom for frequency,
+    /// from the bottom for the level scale.
+    position: float,
+    label: string,
+}
+
+component AxisText inherits Text {
+    font-size: 11px;
+    color: Palette.foreground;
+    vertical-alignment: center;
+}
+
+export component MainWindow inherits Window {
+    title: root.window-title;
+    preferred-width: 1100px;
+    preferred-height: 680px;
+    min-width: 720px;
+    min-height: 420px;
+    background: Palette.background;
+
+    in property <string> window-title: "Spectre";
+    in property <string> info-text;
+    in property <string> readout;
+    in property <string> error-text;
+    in property <bool> busy;
+    in property <bool> has-image;
+    in property <image> spectrogram;
+    in property <image> colorbar;
+    in property <[TickMark]> freq-ticks;
+    in property <[TickMark]> time-ticks;
+    in property <[TickMark]> level-ticks;
+    in property <[string]> channel-names: ["Mix"];
+
+    in-out property <int> fft-index: 2;
+    in-out property <int> window-index: 0;
+    in-out property <int> channel-index: 0;
+    in-out property <float> range-db: 120;
+
+    callback open-file();
+    /// FFT size, window or channel changed: the audio has to be re-analyzed.
+    callback settings-changed();
+    /// Dynamic range changed: only the colouring changes.
+    callback range-changed(float);
+    /// Pointer position over the plot, as fractions from the left (x) and bottom (y).
+    callback cursor-moved(float, float);
+    callback cursor-left();
+
+    // Geometry of the plot area, shared by the axes and the colour bar.
+    property <length> axis-width: 44px;
+    property <length> bar-width: 92px;
+    property <length> header-height: 22px;
+    property <length> footer-height: 22px;
+
+    VerticalLayout {
+        padding: 10px;
+        spacing: 10px;
+
+        HorizontalLayout {
+            spacing: 8px;
+            Button {
+                text: "Open…";
+                clicked => { root.open-file(); }
+            }
+            Rectangle { horizontal-stretch: 1; }
+            AxisText { text: "FFT"; }
+            ComboBox {
+                width: 90px;
+                model: ["512", "1024", "2048", "4096", "8192"];
+                current-index <=> root.fft-index;
+                selected => { root.settings-changed(); }
+            }
+            AxisText { text: "Window"; }
+            ComboBox {
+                width: 120px;
+                model: ["Hann", "Hamming", "Blackman", "Rectangular"];
+                current-index <=> root.window-index;
+                selected => { root.settings-changed(); }
+            }
+            AxisText { text: "Channel"; }
+            ComboBox {
+                width: 120px;
+                model: root.channel-names;
+                current-index <=> root.channel-index;
+                selected => { root.settings-changed(); }
+            }
+            AxisText { text: "Range"; }
+            Slider {
+                width: 110px;
+                minimum: 40;
+                maximum: 180;
+                value <=> root.range-db;
+                changed(v) => { root.range-changed(v); }
+            }
+            AxisText {
+                width: 48px;
+                text: Math.round(root.range-db) + " dB";
+            }
+        }
+
+        plot-region := Rectangle {
+            vertical-stretch: 1;
+            clip: true;
+
+            property <length> plot-x: root.axis-width;
+            property <length> plot-y: root.header-height;
+            property <length> plot-w: self.width - root.axis-width - root.bar-width;
+            property <length> plot-h: self.height - root.header-height - root.footer-height;
+
+            // Unit headings.
+            AxisText { x: 0; y: 0; width: root.axis-width - 6px; height: root.header-height; text: "kHz"; horizontal-alignment: right; }
+            AxisText { x: parent.plot-x + parent.plot-w + 8px; y: 0; height: root.header-height; text: "dBFS"; }
+
+            // Frequency axis.
+            for tick in root.freq-ticks: Rectangle {
+                x: parent.plot-x - 4px;
+                y: parent.plot-y + parent.plot-h * (1 - tick.position) - 7px;
+                width: parent.plot-x;
+                height: 14px;
+                Rectangle { x: 0; y: 7px; width: 4px; height: 1px; background: Palette.foreground; }
+                AxisText { x: -root.axis-width + 4px; width: root.axis-width - 10px; height: 14px; text: tick.label; horizontal-alignment: right; }
+            }
+
+            // Time axis.
+            for tick in root.time-ticks: Rectangle {
+                x: parent.plot-x + parent.plot-w * tick.position - 24px;
+                y: parent.plot-y + parent.plot-h + 2px;
+                width: 48px;
+                height: 18px;
+                Rectangle { x: 24px; y: 0; width: 1px; height: 4px; background: Palette.foreground; }
+                AxisText { y: 4px; width: 48px; height: 14px; text: tick.label; horizontal-alignment: center; }
+            }
+
+            // Spectrogram.
+            Rectangle {
+                x: parent.plot-x;
+                y: parent.plot-y;
+                width: parent.plot-w;
+                height: parent.plot-h;
+                background: black;
+                border-width: 1px;
+                border-color: Palette.border;
+                clip: true;
+
+                Image {
+                    // An Image otherwise keeps its natural pixel size and spills out.
+                    width: parent.width;
+                    height: parent.height;
+                    source: root.spectrogram;
+                    visible: root.has-image;
+                    image-fit: fill;
+                    image-rendering: smooth;
+                }
+
+                Text {
+                    visible: !root.has-image;
+                    text: root.busy ? "Analyzing…"
+                        : root.error-text != "" ? root.error-text
+                        : "Open an audio file to see its spectrogram";
+                    color: root.error-text != "" && !root.busy ? #ff7070 : #b0b0b0;
+                    wrap: word-wrap;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+
+                // Busy overlay for re-analysis while an old image is still shown.
+                Rectangle {
+                    width: parent.width;
+                    height: parent.height;
+                    visible: root.busy && root.has-image;
+                    background: #00000060;
+                    Text { text: "Analyzing…"; color: white; horizontal-alignment: center; vertical-alignment: center; }
+                }
+
+                // Crosshair.
+                Rectangle { visible: touch.has-hover && root.has-image; x: touch.mouse-x; width: 1px; background: #ffffffa0; }
+                Rectangle { visible: touch.has-hover && root.has-image; y: touch.mouse-y; height: 1px; background: #ffffffa0; }
+
+                touch := TouchArea {
+                    enabled: root.has-image;
+                    pointer-event(event) => {
+                        if (event.kind == PointerEventKind.move) {
+                            root.cursor-moved(self.mouse-x / self.width, 1 - self.mouse-y / self.height);
+                        }
+                    }
+                    changed has-hover => {
+                        if (!self.has-hover) { root.cursor-left(); }
+                    }
+                }
+            }
+
+            // Level scale.
+            Image {
+                x: parent.plot-x + parent.plot-w + 8px;
+                y: parent.plot-y;
+                width: 14px;
+                height: parent.plot-h;
+                source: root.colorbar;
+                visible: root.has-image;
+                image-fit: fill;
+            }
+            for tick in root.level-ticks: Rectangle {
+                visible: root.has-image;
+                x: parent.plot-x + parent.plot-w + 8px + 14px;
+                y: parent.plot-y + parent.plot-h * (1 - tick.position) - 7px;
+                width: 60px;
+                height: 14px;
+                Rectangle { x: 0; y: 7px; width: 4px; height: 1px; background: Palette.foreground; }
+                AxisText { x: 8px; height: 14px; text: tick.label; }
+            }
+        }
+
+        HorizontalLayout {
+            spacing: 16px;
+            AxisText {
+                text: root.readout;
+                horizontal-stretch: 1;
+            }
+            AxisText {
+                text: root.info-text;
+                overflow: elide;
+                horizontal-alignment: right;
+                horizontal-stretch: 2;
+            }
+        }
+    }
+}

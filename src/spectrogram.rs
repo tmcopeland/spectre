@@ -86,6 +86,16 @@ pub struct Spectrogram {
     /// Column-major: `data[column * bins + bin]`.
     pub data: Vec<f32>,
     pub sample_rate: u32,
+    /// Length of the analyzed audio in seconds.
+    pub duration_secs: f64,
+}
+
+/// One spectrogram cell and where it sits in time and frequency.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct Cell {
+    pub time_secs: f64,
+    pub freq_hz: f64,
+    pub db: f32,
 }
 
 /// Lowest level we report; avoids -inf for digital silence.
@@ -99,6 +109,25 @@ impl Spectrogram {
     /// Width of one frequency bin in Hz.
     pub fn bin_hz(&self) -> f64 {
         f64::from(self.sample_rate) / 2.0 / (self.bins - 1) as f64
+    }
+
+    /// Looks up the cell under a point given as fractions of the plot area:
+    /// `x` from the left edge, `y` from the bottom edge. Returns `None` outside `0..=1`.
+    pub fn at(&self, x: f64, y: f64) -> Option<Cell> {
+        if !(0.0..=1.0).contains(&x)
+            || !(0.0..=1.0).contains(&y)
+            || self.columns == 0
+            || self.bins < 2
+        {
+            return None;
+        }
+        let column = ((x * self.columns as f64) as usize).min(self.columns - 1);
+        let bin = (y * (self.bins - 1) as f64).round() as usize;
+        Some(Cell {
+            time_secs: x * self.duration_secs,
+            freq_hz: y * f64::from(self.sample_rate) / 2.0,
+            db: self.column(column)[bin],
+        })
     }
 
     /// Frequency and level of the loudest bin anywhere in the spectrogram (DC excluded).
@@ -246,6 +275,7 @@ pub fn analyze(reader: &mut Reader, params: &Params) -> Result<Spectrogram, Erro
         columns,
         data,
         sample_rate: info.sample_rate,
+        duration_secs: info.duration_secs(),
     })
 }
 
@@ -356,6 +386,30 @@ mod tests {
     }
 
     #[test]
+    fn at_maps_plot_fractions_to_cells() {
+        // Two columns, three bins at 0, 2 kHz and 4 kHz over 2 seconds.
+        let spec = Spectrogram {
+            bins: 3,
+            columns: 2,
+            data: vec![-10.0, -20.0, -30.0, -40.0, -50.0, -60.0],
+            sample_rate: 8000,
+            duration_secs: 2.0,
+        };
+        let top_right = spec.at(1.0, 1.0).unwrap();
+        assert_eq!(
+            (top_right.time_secs, top_right.freq_hz, top_right.db),
+            (2.0, 4000.0, -60.0)
+        );
+        let bottom_left = spec.at(0.0, 0.0).unwrap();
+        assert_eq!(
+            (bottom_left.time_secs, bottom_left.freq_hz, bottom_left.db),
+            (0.0, 0.0, -10.0)
+        );
+        assert_eq!(spec.at(0.6, 0.5).unwrap().db, -50.0);
+        assert!(spec.at(-0.01, 0.5).is_none() && spec.at(0.5, 1.01).is_none());
+    }
+
+    #[test]
     fn rasterize_puts_high_frequencies_on_top() {
         // One column, 5 bins; only the top bin is loud.
         let spec = Spectrogram {
@@ -363,6 +417,7 @@ mod tests {
             columns: 1,
             data: vec![-120.0, -120.0, -120.0, -120.0, 0.0],
             sample_rate: 8000,
+            duration_secs: 1.0,
         };
         let (w, h, px) = rasterize(
             &spec,

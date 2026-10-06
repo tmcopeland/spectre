@@ -14,10 +14,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install libsndfile
+      - name: Install libsndfile and GUI build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libsndfile1-dev pkg-config
+          sudo apt-get install -y libsndfile1-dev pkg-config libfontconfig1-dev
 
       - uses: dtolnay/rust-toolchain@stable
         with:
@@ -28,8 +28,9 @@ jobs:
       - name: Check formatting
         run: cargo fmt --all -- --check
 
+      # --all-features also builds the Slint GUI (spectre-gui).
       - name: Clippy
-        run: cargo clippy --all-targets -- -D warnings
+        run: cargo clippy --all-targets --all-features -- -D warnings
 
       - name: Test
-        run: cargo test --all-targets
+        run: cargo test --all-targets --all-features
