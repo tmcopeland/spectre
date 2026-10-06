@@ -2,7 +2,6 @@
 name = "spectre"
 version = "0.2.0"
 edition = "2021"
-rust-version = "1.75"
 description = "Acoustic spectrum analyzer: renders spectrograms of any audio format libsndfile can read"
 authors = ["Taylor M. Copeland <taylor@taylorcopeland.com>"]
 license = "GPL-3.0-or-later"
