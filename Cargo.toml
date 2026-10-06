@@ -1,0 +1,17 @@
+[package]
+name = "spectre"
+version = "0.2.0"
+edition = "2021"
+rust-version = "1.75"
+description = "Acoustic spectrum analyzer: renders spectrograms of any audio format libsndfile can read"
+authors = ["Taylor M. Copeland <taylor@taylorcopeland.com>"]
+license = "GPL-3.0-or-later"
+build = "build.rs"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+png = "0.18"
+realfft = "3"
+
+[build-dependencies]
+pkg-config = "0.3"
