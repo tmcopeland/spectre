@@ -1,0 +1,28 @@
+[package]
+name = "spectre"
+version = "0.2.0"
+edition = "2021"
+description = "Acoustic spectrum analyzer: renders spectrograms of any audio format libsndfile can read"
+authors = ["Taylor M. Copeland <taylor@taylorcopeland.com>"]
+license = "GPL-3.0-or-later"
+build = "build.rs"
+
+[features]
+# Graphical front end (`spectre-gui`). Needs Rust 1.92+ because of Slint.
+gui = ["dep:slint", "dep:slint-build", "dep:rfd"]
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+png = "0.18"
+realfft = "3"
+slint = { version = "1.18", optional = true }
+rfd = { version = "0.17", optional = true }
+
+[build-dependencies]
+pkg-config = "0.3"
+slint-build = { version = "1.18", optional = true }
+
+[[bin]]
+name = "spectre-gui"
+path = "src/bin/spectre-gui.rs"
+required-features = ["gui"]
